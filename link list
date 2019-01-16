@@ -1,0 +1,77 @@
+#include<cstdio>
+#include<iostream>
+#include<cstring>
+#include<stdlib.h>
+#include<algorithm>
+#include<cmath>
+#include<time.h>
+#include<vector>
+#include<set>
+#include<string>
+#include<map>
+#include<stack>
+#include<queue>
+#include<utility>
+using namespace std;
+struct node{
+    int data;
+    node* next;
+};
+node* create(int Array[]){
+    node *p,*pre,*head;
+    head=new node;
+    head->next=NULL;
+    pre=head;
+    for(int i=0;i<5;i++){
+        p=new node;
+        p->data=Array[i];
+        p->next=NULL;
+        pre->next=p;
+        pre=p;
+    }
+    return head;
+}
+int Search(node* head,int x){
+    int countn=0;
+    node* L=head->next;
+    while(L!=NULL){
+        if(L->data==x)
+            countn++;
+        L=L->next;
+    }
+    return countn;
+}
+void Insert(node* head,int pos,int x){
+    node* p=head;
+    for(int i=0;i<pos-1;i++){
+        p=p->next;
+    }
+    node* temp=new node;
+    temp->data=x;
+    temp->next=p->next;
+    p->next=temp;
+}
+void Delete(node* head,int x){
+    node* p=head->next;
+    node* pre=head;
+    while(p!=NULL){
+        if(p->data==x){
+        pre->next=p->next;
+        delete p;
+        p=pre->next;
+        }else{
+            pre=p;
+            p=p->next;
+        }
+    }
+}
+int main(){
+    int Array[5]={5,3,6,1,2};
+    node* L=create(Array);
+    L=L->next;
+    while(L!=NULL){
+        printf("%d ",L->data);
+        L=L->next;
+    }
+    return 0;
+}
