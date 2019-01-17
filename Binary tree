@@ -1,0 +1,101 @@
+#include<cstdio>
+#include<iostream>
+#include<cstring>
+#include<stdlib.h>
+#include<algorithm>
+#include<cmath>
+#include<time.h>
+#include<vector>
+#include<set>
+#include<string>
+#include<map>
+#include<stack>
+#include<queue>
+#include<utility>
+using namespace std;
+int const maxn=100001;
+int pre[maxn],in[maxn];
+struct node{
+    int data;
+    int layer;
+    node* leftChild;
+    node* rightChild;
+};
+node* newNode(int data){
+    node* Node=new node;
+    Node->data=data;
+    Node->leftChild=Node->rightChild=NULL;
+    return Node;
+}
+void Search(node* root,int x,int newData){
+    if(root=NULL){
+        return;
+    }
+    if(root->data=x){
+        root->data=newData;
+    }
+    Search(root->leftChild,x,newData);
+    Search(root->rightChild,x,newData);
+}
+void preorder(node* root){
+    if(root=NULL){
+        return;
+    }
+    printf("%d",root->data);
+    preorder(root->leftChild);
+    preorder(root->rightChild);
+}
+void inorder(node* root){
+    if(root=NULL){
+        return;
+    }
+    inorder(root->leftChild);
+    printf("%d",root->data);
+    inorder(root->rightChild);
+}
+void postorder(node* root){
+    if(root==NULL){
+        return;
+    }
+    postorder(root->leftChild);
+    postorder(root->rightChild);
+    printf("%d",root->data);
+}
+void LayerOrder(node* root){
+    queue<node*> q;
+    root->layer=1;
+    q.push(root);
+    while(!q.empty()){
+        node* now=q.front();
+        q.pop();
+        printf("%d",now->data);
+        if(now->leftChild!=NULL){
+            now->leftChild->layer=now->layer+1;
+            q.push(now->leftChild);
+        }
+        if(now->rightChild!=NULL){
+            now->rightChild->layer=now->layer+1;
+            q.push(now->rightChild);
+        }
+    }
+}
+node* create(int preL,int preR,int inL,int inR){
+    if(preL>preR){
+        return NULL;
+    }
+    node* root=new node;
+    root->data=pre[preL];
+    int k;
+    for(k=inL;k<=inR;k++){
+        if(in[k]==pre[preL])
+            break;
+    }
+    int numLeft=k-inL;
+    root->leftChild=create(preL+1,preL+numLeft,inL,k-1);
+    root->rightChild=create(preL+numLeft+1,preR,k+1,inR);
+    return root;
+}
+int main(){
+
+    return 0;
+}
