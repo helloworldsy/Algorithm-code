@@ -14,6 +14,9 @@
 #include<utility>
 using namespace std;
 int const maxn=100001;
+
+//binary tree implement by pointer
+
 int pre[maxn],in[maxn];
 struct node{
     int data;
@@ -94,6 +97,83 @@ node* create(int preL,int preR,int inL,int inR){
     root->leftChild=create(preL+1,preL+numLeft,inL,k-1);
     root->rightChild=create(preL+numLeft+1,preR,k+1,inR);
     return root;
+}
+int main(){
+
+    return 0;
+}
+
+
+
+
+
+//static binary tree
+
+struct node{
+    int data;
+    int leftChild;
+    int rightChiled;
+}Node[maxn];
+int index=0;
+int newNode(int v){
+    Node[index]=v;
+    Node[index].leftChild=-1;
+    Node[index].rightChiled=-1;
+    return index++;
+}
+void Search(int root,int x,int newdata){
+    if(root==-1) return;
+    if(Node[root]==x){
+        Node[root]=newdata;
+    }
+    Search(Node[root].leftChild,x,newdata);
+    Search(Node[root].rightChiled,x,newdata);
+}
+void Insert(int &root,int x){
+    if(root==-1){
+        root=newNode(x);
+        return;
+    }
+    if(){ //根据所给要求或者性质插入到左子树或者右子树
+        Insert(Node[root].leftChild,x);
+    }else{
+        Insert(Node[root].rightChiled,x);
+    }
+}
+int create(int data[],int n){
+    int root=-1;
+    for(int i=0;i<n;i++){
+        Insert(root,data[i]);
+    }
+    return root;
+}
+void preorder(int root){
+    if(root=-1){
+        return;
+    }
+    printf("%d",Node[root].data);
+    preorder(Node[root].leftChild);
+    preorder(Node[root].rightChiled);
+}
+void inorder(int root){
+    if(root==-1){
+        return;
+    }
+    inorder(Node[root].leftChild);
+    printf("%d",Node[root].data);
+    inorder(Node[root].rightChiled);
+}
+void postorder(int root);
+void LayerOrder(int root){
+    queue<int> q;
+    q.push(root);
+    while(!q.empty()){
+        int now=q.front();
+        q.pop();
+        printf("%d",Node[now].data);
+        if(Node[now].leftChild!=NULL) q.push(Node[now].leftChild);
+        if(Node[now].rightChiled!=NULL) q.push(Node[now].rightChiled);
+    }
 }
 int main(){
 
