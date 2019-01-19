@@ -1,0 +1,103 @@
+#include<cstdio>
+#include<iostream>
+#include<cstring>
+#include<stdlib.h>
+#include<algorithm>
+#include<cmath>
+#include<time.h>
+#include<vector>
+#include<set>
+#include<string>
+#include<map>
+#include<stack>
+#include<queue>
+#include<utility>
+using namespace std;
+struct node{
+    int data,height;
+    node* leftChild;
+    node* rightChild;
+};
+node* newNode(int x){
+    node* Node=new node;
+    Node->data=x;
+    Node->height=1;
+    Node->leftChild=NULL;
+    Node->rightChild=NULL;
+    return Node;
+}
+int getHeight(node* root){
+    if(root=NULL) return 0;
+    return root->height;
+}
+int getBalanceFactor(node* root){
+    return getHeight(root->leftChild)-getHeight(root->rightChild);
+}
+void updateHeight(node* root){
+    root->height=max(getHeight(root->leftChild),getHeight(root->rightChild))+1;
+}
+void Search(node* root,int x){
+    if(root==NULL){
+        printf("Search failed");
+        return;
+    }
+    if(root->data==x){
+        printf("%d",root->data);
+    }else if(root->data>x){
+        Search(root->leftChild,x);
+    }else{
+        Search(root->rightChild,x);
+    }
+}
+void leftRotation(node* &root){
+    node* temp=root->rightChild;
+    root->rightChild=temp->leftChild;
+    temp->leftChild=root;
+    updateHeight(root);
+    updateHeight(temp);
+    root=temp;
+}
+void rightRotation(node* &root){
+    node* temp=root->leftChild;
+    root->leftChild=temp->rightChild;
+    temp->rightChild=root;
+    updateHeight(root);
+    updateHeight(temp);
+    root=temp;
+}
+void Insert(node* &root,int x){
+    if(root==NULL){
+        root=newNode(x);
+        return;
+    }
+    if(x<root->data){
+        Insert(root->leftChild,x);
+        updateHeight(root);
+        if(getBalanceFactor(root)==2){//LL or LR
+            if(getBalanceFactor(root->leftChild)==1){//LL
+                rightRotation(root);
+            }else if(getBalanceFactor(root->leftChild)==-1){
+                leftRotation(root->leftChild);
+                rightRotation(root);
+            }
+        }
+    }else{
+        Insert(root->rightChild,x);
+        updateHeight(root);
+        if(getBalanceFactor(root)==-2){
+            if(getBalanceFactor(root->rightChild)==1){//RL
+                rightRotation(root->rightChild);
+                leftRotation(root);
+            }else if(getBalanceFactor(root->rightChild)==-1){//RR
+                leftRotation(root);
+            }
+        }
+    }
+}
+node* Create(int data[],int n){
+    node* root=NULL;
+    for(int i=0;i<n;i++){
+        Insert(root,data[i]);
+    }
+    return root;
+}
