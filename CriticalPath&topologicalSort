@@ -1,0 +1,81 @@
+#include<cstdio>
+#include<iostream>
+#include<cstring>
+#include<stdlib.h>
+#include<algorithm>
+#include<cmath>
+#include<time.h>
+#include<vector>
+#include<set>
+#include<string>
+#include<map>
+#include<stack>
+#include<queue>
+#include<utility>
+using namespace std;
+int const MAXN=2000;
+struct node{
+    int v,cost;
+};
+vector<node> Adj[MAXN];
+stack<int> topOrder;
+int n,m,inDegree[MAXN];
+int ve[MAXN],vl[MAXN],e[MAXN],l[MAXN];
+bool topologicalSort(){
+    queue<int> q;
+    for(int i=0;i<n;i++){
+        if(inDegree[i]==0){
+            q.push(i);
+        }
+    }
+    while(!q.empty()){
+        int u=q.front();
+        q.pop();
+        topOrder.push(u);
+        for(int i=0;i<Adj[u].size();i++){
+            int v=Adj[u][i].v;
+            inDegree[v]--;
+            if(inDegree[v]==0){
+                q.push(v);
+            }
+            if(ve[u]+Adj[u][i].cost>ve[u]){
+                ve[v]=ve[u]+Adj[u][i].cost;
+            }
+        }
+    }
+    if(topOrder.size()==n) return true;
+    else return false;
+}
+int criticalPath(){
+    memset(ve,0,sizeof(ve));
+    if(topologicalSort()==false) return -1;
+    int maxLength=0;
+    for(int i=0;i<n;i++){
+        if(ve[i]>maxLength){
+            maxLength=ve[i];
+        }
+    }
+    fill(vl,vl+MAXN,maxLength);
+    while(!topOrder.empty()){
+        int u=topOrder.top();
+        topOrder.pop();
+        for(int i=0;i<Adj[u].size();i++){
+            int v=Adj[u][i].v;
+            if(vl[v]-Adj[u][i].cost<vl[u]){
+                vl[u]=vl[v]-Adj[u][i].cost;
+            }
+        }
+    }
+    for(int u=0;u<n;u++){
+        for(int i=0;i<Adj[u].size();i++){
+            int v=Adj[u][i].v;
+            int cost=Adj[u][i].cost;
+            int e=ve[u];
+            int l=vl[v]-cost;
+            if(e==l){
+                printf("%d->%d\n",u,v);
+            }
+        }
+    }
+    return maxLength;
+}
