@@ -1,0 +1,55 @@
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+#include<string>
+#include<map>
+using namespace std;
+const int INF=1000000000;
+struct station{
+    double price,distance;
+}gas_station[510];
+bool cmp(station a,station b){
+    return a.distance<b.distance;
+}
+int main(){
+    double cMax,d,dAvg;
+    int n;
+    scanf("%lf%lf%lf%d",&cMax,&d,&dAvg,&n);
+    for(int i=0;i<n;i++){
+        scanf("%lf%lf",&gas_station[i].price,&gas_station[i].distance);
+    }
+    gas_station[n].distance=d;
+    gas_station[n].price=0;
+    sort(gas_station,gas_station+n,cmp);
+    if(gas_station[0].distance!=0)printf("The maximum travel distance = 0.00");
+    else{
+        int now=0;
+        double ans=0,nowTank=0,MAX=cMax*dAvg;
+        while(now<n){
+            int k=-1;
+            double minPrice=INF;
+            for(int i=now+1;i<=n&&gas_station[i].distance-gas_station[now].distance<=MAX;i++){
+                if(gas_station[i].price<minPrice){
+                    minPrice=gas_station[i].price;
+                    k=i;
+                    if(minPrice<gas_station[now].price)break;
+                }
+            }
+            if(k==-1)break;
+            double need=(gas_station[k].distance-gas_station[now].distance)/dAvg;
+            if(minPrice<gas_station[now].price){
+                if(need>nowTank){
+                    ans+=gas_station[now].price*(need-nowTank);
+                    nowTank=0;
+                }else nowTank-=need;
+            }else{
+                ans+=gas_station[now].price*(cMax-nowTank);
+                nowTank=cMax-need;
+            }
+            now=k;
+        }
+        if(now==n)printf("%.2f",ans);
+        else printf("The maximum travel distance = %.2f",gas_station[now].distance+MAX);
+    }
+    return 0;
+}
