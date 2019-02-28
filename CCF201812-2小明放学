@@ -1,0 +1,29 @@
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+typedef long long ll;
+ll r,y,g,k,t,n,ans=0;
+ll waitTime(ll k,ll t,ll time){
+	if(k==0)return t;
+	if(k==1){
+		if(time<t)return t-time;
+		else return waitTime(3,g,time-t);
+	}else if(k==2){
+		if(time<t)return t-time+r;
+		else return waitTime(1,r,time-t);
+	}else{
+		if(time<t)return 0;
+		return waitTime(2,y,time-t);
+	}
+}
+int main(){
+	scanf("%lld%lld%lld%lld",&r,&y,&g,&n);
+	for(int i=0;i<n;i++){
+		scanf("%lld%lld",&k,&t);
+		ll time=ans%(r+g+y);
+		ans+=waitTime(k,t,time);
+	}
+	printf("%lld",ans);
+}
+//如果不取模运算会因为数据太大导致递归过深超时
