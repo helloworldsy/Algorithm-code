@@ -1,0 +1,84 @@
+//纪念下自己第一次手动ac ccf第三题，虽然不难还是花了一天的时间
+#include<cstdio>
+#include<algorithm>
+#include<map>
+#include<string>
+#include<cstring>
+#include<iostream>
+#include<vector>
+#include<set>
+using namespace std;
+map<char,string>para;
+map<char,int>state;
+bool vis[256];
+set<char>cmd;
+void findspace(int& p,string cmd){
+    int l=cmd.length();
+    while(p<l){
+        if(cmd[p]==' ')return;
+        else p++;
+    }
+}
+int main(){
+    string str,unused;
+    cin>>str;
+   int len=str.length();
+    for(int i=0;i<len;i++){
+        if(str[i+1]==':'){
+            state[str[i]]=2;
+            i++;
+        }else state[str[i]]=1;
+    }
+    int n;
+    cin>>n;
+    getchar();
+    for(int i=1;i<=n;i++){
+        getline(cin,str);
+        para.clear();
+        cmd.clear();
+        memset(vis,false,sizeof(vis));
+        len=str.length();
+        int p=0;
+        while(str[p]!=' '&&p<len)p++;
+        cout<<"Case "<<i<<":";
+        while(p<len){
+            p++;
+            if(str[p]!='-')break;
+            else if(state.find(str[p+1])==state.end())break;
+            else if(str[p+2]!=' ')break;
+            else{
+                char c=str[p+1];
+                if(vis[(int)c]==false&&state[c]==1){
+                    vis[(int)c]=true;
+                    cmd.insert(c);
+                    p+=2;
+                }else if(vis[(int)c]==true&&state[c]==1){
+                    p+=2;
+                }else if(vis[(int)c]==false&&state[c]==2){
+                    cmd.insert(c);
+                    para[c]="";
+                    p+=3;
+                    while(str[p]!=' '&&p<len){
+                        para[c]+=str[p];
+                        p++;
+                    }
+                    vis[(int)c]=true;
+                }else if(vis[(int)c]==true&&state[c]==2){
+                    p+=3;
+                    para[c].clear();
+                    while(str[p]!=' '&&p<len){
+                        para[c]+=str[p];
+                        p++;
+                    }
+                }
+            }
+        }
+        set<char>::iterator it;
+        for(it=cmd.begin();it!=cmd.end();it++){
+            cout<<" -"<<*it;
+            if(state[*it]==2)cout<<" "<<para[*it];
+        }
+        cout<<endl;
+    }
+    return 0;
+}
